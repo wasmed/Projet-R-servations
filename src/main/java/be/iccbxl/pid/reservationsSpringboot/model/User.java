@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,6 +24,9 @@ public class User {
     private String langue;
     private String role;
     private LocalDateTime created_at;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Role> roles = new ArrayList<>();
 
     protected User() {}
 
