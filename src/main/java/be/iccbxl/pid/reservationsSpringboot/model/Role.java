@@ -2,7 +2,6 @@ package be.iccbxl.pid.reservationsSpringboot.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,5 +30,33 @@ public class Role {
         super();
         this.role = role;
     }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public Role addUser(User user) {
+        if(!this.users.contains(user)) {
+            this.users.add(user);
+            user.addRole(this);
+        }
+
+        return this;
+    }
+
+    public Role removeUser(User user) {
+        if(this.users.contains(user)) {
+            this.users.remove(user);
+            user.getRoles().remove(this);
+        }
+
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Role [id=" + id + ", role=" + role + "]";
+    }
+
 
 }

@@ -37,6 +37,26 @@ public class User {
         this.role = role;
         this.created_at = LocalDateTime.now();
     }
+    public User addRole(Role role) {
+        if(!this.roles.contains(role)) {
+            this.roles.add(role);
+            role.addUser(this);
+        }
+
+        return this;
+    }
+
+    public User removeRole(Role role) {
+        if(this.roles.contains(role)) {
+            this.roles.remove(role);
+            role.getUsers().remove(this);
+        }
+
+        return this;
+    }
+
+
+
     @Override
     public String toString() {
         return login + "(" + firstname + " " + lastname + " - " + role + ")";

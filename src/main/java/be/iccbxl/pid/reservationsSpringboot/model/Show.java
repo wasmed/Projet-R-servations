@@ -18,14 +18,12 @@ public class Show {
 
 
     private String slug;
-
     private String title;
 
     @Column(name="poster_url")
     private String poster_url;
 
     private boolean bookable;
-
     private double price;
     private String description;
 
@@ -54,5 +52,24 @@ public class Show {
         this.created_at = LocalDateTime.now();
         this.updatedAt = null;
     }
+
+    public Show addArtistType(ArtisteType artistType) {
+        if(!this.artistTypes.contains(artistType)) {
+            this.artistTypes.add(artistType);
+            artistType.addShow(this);
+        }
+
+        return this;
+    }
+
+    public Show removeArtistType(ArtisteType artistType) {
+        if(this.artistTypes.contains(artistType)) {
+            this.artistTypes.remove(artistType);
+            artistType.getShows().remove(this);
+        }
+
+        return this;
+    }
+
 
 }
