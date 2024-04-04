@@ -1,5 +1,5 @@
-CREATE TABLE `types` (
+CREATE TABLE `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
   PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
