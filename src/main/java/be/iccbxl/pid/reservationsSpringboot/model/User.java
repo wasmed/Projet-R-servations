@@ -13,7 +13,7 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private String login;
     private String password;
@@ -33,11 +33,10 @@ public class User {
 
     protected User() {}
 
-    public User(String login, String firstname, String lastname, String role) {
+    public User(String login, String firstname, String lastname) {
         this.login = login;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.role = role;
         this.created_at = LocalDateTime.now();
     }
     public User addRole(Role role) {
