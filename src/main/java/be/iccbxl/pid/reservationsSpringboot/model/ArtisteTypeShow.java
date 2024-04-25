@@ -1,4 +1,4 @@
-package be.iccbxl.pid.reservationsSpringboot.model;
+/*package be.iccbxl.pid.reservationsSpringboot.model;
 
 import jakarta.persistence.*;
 
@@ -19,4 +19,4 @@ public class ArtisteTypeShow {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artiste_type_id", nullable=false)
     private ArtisteType artisteType;
-}
+}*/
