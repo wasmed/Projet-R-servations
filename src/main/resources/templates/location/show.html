@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Fiche d'un lieu de spectacle</title>
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+        <h1 th:text="${location.designation}">Designation</h1>
+
+        <address>
+            <p th:text="${location.address}">Address</p>
+            <p th:text="|${location.locality.postalCode} ${location.locality.locality}|">postalCode locality</p>
+
+            <p th:if="${location.website}"><a th:text="${location.website}"
+                                              th:href="@{${location.website}}" target="_blank">website</a></p>
+            <p th:unless="${location.website}">Pas de site web</p>
+
+            <p th:if="${location.phone}"><a th:text="${location.phone}"
+                                            th:href="'tel:' + @{${location.phone}}">phone</a></p>
+            <p th:unless="${location.phone}">Pas de téléphone</p>
+        </address>
+
+        <h2>Liste des spectacles</h2>
+        <ul th:unless="${#lists.isEmpty(location.shows)}">
+            <li th:each="show : ${location.shows}" th:text="${show.title}">show title</li>
+        </ul>
+
+        <p th:if="${#lists.isEmpty(location.shows)}">Aucun spectacle.</p>
+
+        <nav><a th:href="@{/locations}">Retour à l'index</a></nav>
+    </div>
+</div>
+</body>
+</html>
