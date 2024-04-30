@@ -34,7 +34,6 @@ public class ShowController {
     public String show(Model model, @PathVariable("id") String id) {
         Show show = service.get(id);
 
-
         //Récupérer les artistes du spectacle et les grouper par type
         Map<String, ArrayList<Artist>> collaborateurs = new TreeMap<>();
 

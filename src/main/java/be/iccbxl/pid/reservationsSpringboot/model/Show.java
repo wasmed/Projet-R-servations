@@ -23,7 +23,7 @@ public class Show {
     private String title;
 
     @Column(name="poster_url")
-    private String poster_url;
+    private String posterUrl;
 
     private boolean bookable;
     private double price;
@@ -56,12 +56,19 @@ public class Show {
         this.slug = slg.slugify(title);
         this.title = title;
         this.description = description;
-        this.poster_url = posterUrl;
+        this.posterUrl = posterUrl;
         this.location = location;
         this.bookable = bookable;
         this.price = price;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = null;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+
+        Slugify slg = new Slugify();
+
+        this.setSlug(slg.slugify(title));
     }
 
     public boolean isBookable() {

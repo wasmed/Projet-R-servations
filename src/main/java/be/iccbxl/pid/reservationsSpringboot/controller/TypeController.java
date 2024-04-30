@@ -3,12 +3,13 @@ package be.iccbxl.pid.reservationsSpringboot.controller;
 import be.iccbxl.pid.reservationsSpringboot.model.Type;
 import be.iccbxl.pid.reservationsSpringboot.service.TypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-
+@Controller
 public class TypeController {
 
     @Autowired
