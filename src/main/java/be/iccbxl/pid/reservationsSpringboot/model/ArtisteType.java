@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name="artiste_type")
+@Table(name="artist_type")
 public class ArtisteType {
 
 

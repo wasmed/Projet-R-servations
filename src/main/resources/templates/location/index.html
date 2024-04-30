@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+  <title>Liste des lieux de spectacle</title>
+</head>
+<body>
+<div class="container">
+  <div layout:fragment="content">
+    <h1 th:text="${title}">Liste des lieux de spectacle</h1>
+
+    <ul th:unless="${#lists.isEmpty(locations)}">
+      <li th:each="location : ${locations}">
+        <span th:text="${location.designation}">Designation</span>
+        <a th:if="${location.website}" th:text="${location.website}"
+           th:href="${location.website}" target="_blank">Website</a>
+        <a th:href="@{/locations/{id}(id=${location.id})}">View</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
