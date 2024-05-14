@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+
+    <title>Registration Form</title>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div layout:fragment="content">
+    <div class="message" th:if="${message != null}">
+        [[${message}]]
+    </div>
+    <h2>Registration Form</h2>
+    <form
+            th:action="@{/registration}"
+            method="post"
+            role="form"
+            th:object="${user}"
+
+    >
+        <div class="form-group">
+            <label for="firstname">Firstname:</label>
+            <input th:field="*{firstname}" type="text" id="firstname" name="firstname" placeholder="Enter your firstname" required>
+            <span class="text-danger" th:errors="*{firstname}"></span>
+        </div>
+        <div class="form-group">
+            <label for="lastname">lastname:</label>
+            <input th:field="*{lastname}" type="text" id="lastname" name="lastname" placeholder="Enter your lastname" required>
+            <span class="text-danger" th:errors="*{lastname}"></span>
+        </div>
+        <div class="form-group">
+            <label for="login">l:</label>
+            <input th:field="*{login}" type="text" id="login" name="login" placeholder="Enter your login" required>
+            <span class="text-danger" th:errors="*{login}"></span>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input th:field="*{email}" type="email" id="email" name="email" placeholder="Enter your email" required>
+
+        </div>
+        <div class="form-group">
+            <label for="langue">Langue:</label>
+            <select th:field="*{langue}" id="langue" name="langue" required>
+                <option value="fr">Français</option>
+                <option value="nl">Néerlandais</option>
+                <option value="en">Anglais</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input th:field="*{password}" type="password" id="password" name="password" placeholder="Enter your password" required>
+            <span class="text-danger" th:errors="*{password}"></span>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input th:field="*{confirmPassword}" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            <span class="text-danger" th:errors="*{confirmPassword}"></span>
+        </div>
+
+        <input type="submit" value="Register">
+
+    </form>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        // Vérification de la disponibilité du login
+        $('#login').on('blur', function() {
+            var login = $(this).val();
+            $.get('/check-login-availability?login=' + login, function(response) {
+                if (!response.available) {
+                    $('#login-error').text('Login already exists.');
+                } else {
+                    $('#login-error').text('');
+                }
+            });
+        });
+
+        // Vérification de la disponibilité de l'email
+        $('#email').on('blur', function() {
+            var email = $(this).val();
+            $.get('/check-email-availability?email=' + email, function(response) {
+                if (!response.available) {
+                    $('#email-error').text('Email already exists.');
+                } else {
+                    $('#email-error').text('');
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

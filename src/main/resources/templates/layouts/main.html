@@ -4,17 +4,19 @@
 <head>
   <meta charset="utf-8">
   <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Projet Réservations</title>
-  <th:block layout:fragment="css">
-  </th:block>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-<div th:replace="fragments/header :: header">Header here</div>
+<div th:replace="~{fragments/header :: header}">Header here</div>
 <div class="container">
   <div layout:fragment="content">Main content will be inserted here.</div>
 </div>
-<div th:replace="fragments/footer :: footer"> 2016 The Static Templates</div>
-<th:block layout:fragment="scripts">
-</th:block>
+<div th:replace="~{fragments/footer :: footer}"> 2016 The Static Templates</div>
+
 </body>
 
 </html>
