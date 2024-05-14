@@ -1,6 +1,8 @@
 package be.iccbxl.pid.reservationsSpringboot.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,14 +15,31 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String login;
-    private String password;
-    private String firstname;
-    private String lastname;
-    private String email;
 
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()-+=])(?=\\S+$).{6,}$",
+            message = "Password must be at least 6 characters long, contain at least one uppercase letter, and contain at least one special character from !@#$%^&*()-+=")
+    @NotNull(message = "Must not be empty")
+    private String password;
+
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()-+=])(?=\\S+$).{6,}$",
+            message = "Password must be at least 6 characters long, contain at least one uppercase letter, and contain at least one special character from !@#$%^&*()-+=")
+    @Transient
+    private String confirmPassword;
+
+    @Pattern(regexp = "^[a-zA-Z\\-\\s]{2,18}$",
+            message = "first name must be of 2 to 18 length with no special characters and numbers")
+    @NotNull(message = "Must not be empty")
+    private String firstname;
+
+    @Pattern(regexp = "^[a-zA-Z\\-\\s]{2,18}$",
+            message = "last name must be of 2 to 18 length with no special characters and numbers")
+    @NotNull(message = "Must not be empty")
+    private String lastname;
+
+    private String email;
     private String langue;
     private String role;
     private LocalDateTime created_at;
@@ -33,10 +52,11 @@ public class User {
 
     protected User() {}
 
-    public User(String login, String firstname, String lastname) {
+    public User(String login, String firstname, String lastname,String role) {
         this.login = login;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.role = role;
         this.created_at = LocalDateTime.now();
     }
     public User addRole(Role role) {

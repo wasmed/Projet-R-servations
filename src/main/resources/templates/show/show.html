@@ -1,12 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+<html   xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="layouts/main">
 <head>
+  <meta charset="UTF-8">
   <title>Fiche d'un spectacle</title>
+  <link rel="stylesheet" th:href="@{../css/styles.css}">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 </head>
 <body>
-<div class="container">
-  <div layout:fragment="content">
+<div layout:fragment="content" >
+  <!-- Barre de navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Réservations</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Se connecter</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/registration">S'inscrire</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Barre de recherche -->
+  <div class="input-group mt-3">
+    <input type="text" class="form-control" placeholder="Rechercher un spectacle...">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button">Rechercher</button>
+    </div>
+  </div>
+  <div class="mt-3">
     <h1 th:text="${show.title}">Ayiti</h1>
 
     <p th:if="${show.posterUrl}"><img th:src="@{'/images/'+${show.posterUrl}}" th:alt="${show.title}" src="/images/default.jpg" width="200"></p>
@@ -49,5 +83,7 @@
     <nav><a th:href="@{/shows}">Retour à l'index</a></nav>
   </div>
 </div>
+
+
 </body>
 </html>

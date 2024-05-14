@@ -2,12 +2,20 @@
 <html lang="fr" xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
+  <link rel="stylesheet" th:href="@{../css/styles.css}">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <title>Fiche d’un artiste</title>
 </head>
 <body>
 <div class="container">
   <div layout:fragment="content">
     <h1 th:text="|${artist.firstname}  ${artist.lastname}|">Bob Sull</h1>
+    <h2>Liste des types</h2>
+    <ul th:unless="${#lists.isEmpty(artist.types)}">
+      <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
+    </ul>
 
     <div class="actions">
       <a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a>
