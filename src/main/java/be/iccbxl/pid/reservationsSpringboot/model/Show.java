@@ -145,4 +145,17 @@ public class Show {
         return this;
     }
 
+    @Transient
+    public List<Artist> getAuthors() {
+        List<Artist> authors = new ArrayList<>();
+
+        for (ArtisteType artistType : artistTypes) {
+            if (artistType.getType().getType().equals("scénographe")) {
+                authors.add(artistType.getArtist());
+            }
+        }
+
+        return authors;
+    }
+
 }

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/main">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/css/adminlte.min.css">
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.1.0/js/adminlte.min.js"></script>
+    <script
+            type="text/javascript" th:src="@{/js/admin.js}">
+    </script>
+
+    <title>back office</title>
+
+
+</head>
+<body class="hold-transition sidebar-mini">
+
+<div class="wrapper">
+    <div class="container">
+        <div layout:fragment="content">
+
+
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="#" class="brand-link">
+            <span class="brand-text font-weight-light">Back Office</span>
+        </a>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>
+                                Tableau de Bord
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Tableau de Bord</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3><span  th:text="${userCount}"></span></h3>
+
+                                <p>Utilisateurs</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-person-add"></i>
+                            </div>
+                            <div class="small-box-footer">
+                                <p>Membres: <span th:text="${memberCount}"></span></p>
+                                <p>Admins: <span th:text="${adminCount}"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3><span th:text="${artistCount}"></span></h3>
+
+                                <p>Artists</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="#" class="small-box-footer">Plus d'infos <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3><span th:text="${showsCount}"></span></h3>
+
+                                <p>Shows</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a href="#" class="small-box-footer">Plus d'infos <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Liste des Utilisateurs</h3>
+                                <a href="#" th:href="@{/registration}" class="btn btn-primary float-right">Ajouter un Utilisateur</a> </div>
+                            <div class="card-body">
+                                <table  class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th><i class="fas fa-user"></i> Login</th>
+                                        <th><i class="fas fa-user-circle"></i> Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Email</th>
+                                        <th>Langue</th>
+                                        <th>Rôle</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                    <tr th:each="user : ${users}">
+                                        <td th:text="${user.login}"></td>
+                                        <td><input type="text" th:value="${user.lastname}" class="form-control user-lastname" data-user-id="${user.id}"></td>
+                                        <td><input type="text" th:value="${user.firstname}" class="form-control user-firstname" data-user-id="${user.id}"></td>
+                                        <td><input type="email" th:value="${user.email}" class="form-control user-email" data-user-id="${user.id}"></td>
+                                        <td><input type="text" th:value="${user.langue}" class="form-control user-langue" data-user-id="${user.id}"></td>
+                                        <td><input type="text" th:value="${user.role}" class="form-control user-role" data-user-id="${user.id}"></td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm edit-user" data-user-id="${user.id}">Modifier</button>
+                                            <button class="btn btn-danger btn-sm delete-user" data-user-id="${user.id}">Supprimer</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    </form>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <!-- /.row -->
+          <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+
+        </div>
+    </div>
+</div>
+
+<!-- ./wrapper -->
+</body>
+</html>

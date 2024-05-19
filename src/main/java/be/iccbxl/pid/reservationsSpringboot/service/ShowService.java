@@ -53,4 +53,8 @@ public class ShowService {
         return repository.findByLocation(location);
     }
 
+    public long countShows() {
+
+        return repository.count();
+    }
 }
