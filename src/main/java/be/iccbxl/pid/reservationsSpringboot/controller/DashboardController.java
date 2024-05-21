@@ -1,16 +1,23 @@
 package be.iccbxl.pid.reservationsSpringboot.controller;
 
+import be.iccbxl.pid.reservationsSpringboot.model.Artist;
+import be.iccbxl.pid.reservationsSpringboot.model.Location;
+import be.iccbxl.pid.reservationsSpringboot.model.Show;
 import be.iccbxl.pid.reservationsSpringboot.model.User;
-import be.iccbxl.pid.reservationsSpringboot.service.ArtistService;
-import be.iccbxl.pid.reservationsSpringboot.service.ShowService;
-import be.iccbxl.pid.reservationsSpringboot.service.UserService;
+import be.iccbxl.pid.reservationsSpringboot.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -20,16 +27,26 @@ public class DashboardController {
 
     @Autowired
     UserDetailsService userDetailsService;
+
     @Autowired
     private ArtistService artistService;
+
+    @Autowired
+    private TypeService typeService;
+
+    @Autowired
+    private LocationService locationService;
+
     @Autowired
     private ShowService showService;
 
     @Autowired
     private UserService userService;
 
+
     @GetMapping("/admin")
     public String adminPage(Model model, Principal principal) {
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
         long userCount = userService.countUsers();
         long artistCount = artistService.countArtists();
@@ -37,6 +54,10 @@ public class DashboardController {
         List<User> users = userService.getAllUsers();
         int memberCount = userService.countMembers(); // Count member users
         int adminCount = userService.countAdmins(); // Count admin users
+        List<Show> shows = showService.getAll();
+
+        model.addAttribute("locations", locationService.getAll()); // Récupérer les locations
+        model.addAttribute("types", typeService.getAll());          // Récupérer les types
         model.addAttribute("userCount", userCount);
         model.addAttribute("user", userDetails);
         model.addAttribute("users", users);
@@ -44,43 +65,64 @@ public class DashboardController {
         model.addAttribute("adminCount", adminCount);
         model.addAttribute("artistCount", artistCount);
         model.addAttribute("showsCount", showCount);
-
+        model.addAttribute("shows", shows);
+        if (model.containsAttribute("userToEdit")) {
+            model.addAttribute("userToEdit", model.getAttribute("userToEdit"));
+        }
+        if (model.containsAttribute("showToEdit")) {
+            model.addAttribute("showToEdit", model.getAttribute("showToEdit"));
+        }
+        if (model.containsAttribute("locationToEdit")) {
+            model.addAttribute("locationToEdit", model.getAttribute("locationToEdit"));
+        }
+        if (model.containsAttribute("typeToEdit")) {
+            model.addAttribute("typeToEdit", model.getAttribute("typeToEdit"));
+        }
         return "user/admin";
     }
-    @GetMapping("/users")
-    public String getAllUsers(Model model) {
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "user/list"; // Replace with your actual user list template name
-    }
-
-    @PostMapping("/admin/users/update/{userId}")
-    public ResponseEntity<User> updateMemberAdmin(@PathVariable Long userId, @RequestBody User updatedUser) {
-        userService.updateUser(userId, updatedUser);
-        User user = userService.getUser(userId);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.notFound().build();
+    // Méthodes pour l'ajout (POST)
+    @PostMapping("/users/add")
+    public String addUser(@ModelAttribute("newUser") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.newUser", bindingResult);
+            redirectAttributes.addFlashAttribute("newUser", user);
+            return "redirect:/admin"; // Rediriger vers la page admin avec les erreurs
         }
+
+        userService.addUser(user);
+        return "redirect:/admin";
     }
-    @GetMapping("/users/{id}/edit")
-    public String editUser(@PathVariable Long id, Model model) {
+
+    // ... (mêmes méthodes POST pour addShow, addLocation, addType)
+
+    // Méthodes pour la modification (GET et POST)
+    @GetMapping("/users/edit/{id}")
+    public String editUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         User user = userService.getUser(id);
-        model.addAttribute("user", user);
-        return "user/admin"; // Replace with your actual user edit template name
+        redirectAttributes.addFlashAttribute("userToEdit", user);
+        return "redirect:/admin";
     }
 
-    @PostMapping("/users/{id}/update")
-    public String updateUser(@PathVariable Long id, @ModelAttribute User user) {
-        userService.updateUser(id,user);
-        return "user/admin"; // Redirect to user list after update
+    @PostMapping("/users/update/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute("userToEdit") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userToEdit", bindingResult);
+            redirectAttributes.addFlashAttribute("userToEdit", user);
+            return "redirect:/admin";
+        }
+
+        userService.updateUser(id, user);
+        return "redirect:/admin";
     }
 
-    @GetMapping("/users/{id}/delete")
+    // ... (mêmes méthodes GET/POST pour edit/update pour show, location, type)
+
+    // Méthodes pour la suppression (GET)
+    @GetMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return "user/admin"; // Redirect to user list after delete
+        return "redirect:/admin";
     }
+
 
 }

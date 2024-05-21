@@ -29,7 +29,12 @@
         <li th:classappend="${module == 'artists' ? 'active' : ''}" class="nav-item">
           <a class="nav-link" href="#" th:href="@{/artists}">Artists</a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="#" th:href="@{/cart}" th:if="${loggedIn}">
+            <i class="fas fa-shopping-cart"></i> Panier
+            <span class="badge badge-pill badge-danger" th:text="${cartItemCount}">0</span>
+          </a>
+        </li>
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item">

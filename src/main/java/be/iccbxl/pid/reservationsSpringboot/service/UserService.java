@@ -105,6 +105,18 @@ public class UserService {
         javaMailSender.send(message);
     }
 
+    public void sendConfirmationEmailForgetPassword(User user) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Password Reset Request");
+        message.setText("Bonjour " + user.getFirstname() + ",\n\n"
+                + "To reset your password, click the following link:\n"
+                + "http:http://localhost:8080/login" + "\n\n"
+                + "Cordialement,\nVotre équipe de support");
+        javaMailSender.send(message);
+    }
+
     public String findRoleByUsername(String username) {
 
         User user = userRepository.findByLogin(username);

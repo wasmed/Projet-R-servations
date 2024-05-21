@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/main}">
 <head>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -7,30 +8,47 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <title>Fiche d’un artiste</title>
+  <style>
+    .actions {
+      margin-top: 1.5em;
+    }
+    .actions a, .actions form {
+      margin-right: 0.5em;
+    }
+    .actions form {
+      display: inline;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+<div class="container mt-5">
   <div layout:fragment="content">
-    <h1 th:text="|${artist.firstname}  ${artist.lastname}|">Bob Sull</h1>
-    <h2>Liste des types</h2>
-    <ul th:unless="${#lists.isEmpty(artist.types)}">
-      <li th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
+    <h1 class="display-4" th:text="|${artist.firstname} ${artist.lastname}|">Bob Sull</h1>
+    <h2 class="h4 mt-4">Liste des types</h2>
+    <ul class="list-group" th:unless="${#lists.isEmpty(artist.types)}">
+      <li class="list-group-item" th:each="type : ${artist.types}" th:text="${type.type}">Type</li>
     </ul>
-
-    <div class="actions">
-      <a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a>
+    <p th:if="${#lists.isEmpty(artist.types)}" class="text-muted">Aucun type associé.</p>
+    <div th:if="${role == 'admin'}">
+    <div class="actions mt-4">
+      <a th:href="@{/artists/{id}/edit(id=${artist.id})}" class="btn btn-primary">Modifier</a>
       <form th:id="|deleteForm-${artist.id}|"
             th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
-        <a href="#" th:onclick="|if(confirm('Confirm delete artist #${artist.id}'))
-                 		document.getElementById('deleteForm-${artist.id}').submit();
-                 		return false;|">Delete</a>
-      </form>
+        <button type="button" class="btn btn-danger"
+                th:onclick="|if(confirm('Confirmer la suppression de l\'artiste #${artist.id}'))
+                            document.getElementById('deleteForm-${artist.id}').submit();|">
+          Supprimer
+        </button>
 
+      </form>
+    </div>
     </div>
 
-    <nav><a th:href="@{/artists}">Retour à l'index</a></nav>
+    <nav class="mt-4">
+      <a th:href="@{/artists}" class="btn btn-link">Retour à l'index</a>
+    </nav>
   </div>
 </div>
 </body>
-
 </html>
+

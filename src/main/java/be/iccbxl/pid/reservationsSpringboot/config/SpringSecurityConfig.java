@@ -31,6 +31,8 @@ public class SpringSecurityConfig {
                     auth.requestMatchers("/").hasRole("MEMBER");
                     auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll();
                     auth.requestMatchers("/registration", "/css/**").permitAll();
+                    auth.requestMatchers("/forgot-password", "/css/**").permitAll();
+                    auth.requestMatchers("/forgot-password/sendEmail", "/css/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(form -> form

@@ -1,4 +1,35 @@
 $(document).ready(function() {
+
+
+ function showSection(sectionId) {
+        // Hide all sections
+        $('.content-section').hide();
+        // Show the selected section
+        $(sectionId).show();
+    }
+
+    // Handle button clicks
+    $('#btn-users').on('click', function() {
+        showSection('#users-section');
+    });
+
+    $('#btn-artists').on('click', function() {
+        showSection('#artists-section');
+    });
+
+    $('#btn-shows').on('click', function() {
+        showSection('#shows-section');
+    });
+
+$('#btn-locations').on('click', function() {
+    showSection('#locations-section');
+});
+
+$('#btn-type').on('click', function() {
+    showSection('#type-section');
+});
+
+
     $(".edit-user").on("click", function(event) {
         event.preventDefault();
 
@@ -47,4 +78,16 @@ $(document).ready(function() {
         row.find("td:eq(4)").text(newLangue);
         row.find("td:eq(5)").text(newRole);
     }
+
+  $('#shows-table').DataTable({
+            "paging": true, // Activer la pagination
+            "pageLength": 10, // Nombre de lignes par page
+            "lengthChange": true, // Permettre à l'utilisateur de changer le nombre de lignes par page
+            "searching": true, // Activer la recherche
+            "ordering": true, // Activer le tri
+            "info": true, // Afficher les informations sur la pagination
+            "autoWidth": false, // Désactiver la largeur automatique des colonnes
+            "responsive": true // Activer la prise en charge des écrans mobiles
+        });
+
 });

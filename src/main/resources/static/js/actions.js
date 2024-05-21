@@ -1,31 +1,25 @@
- $(document).ready(function () {
-     // Initialisation de DataTable avec la réactivité
-     $('#shows-table').DataTable({
-         responsive: true
-     });
+$(document).ready(function () {
+    // Initialisation de DataTable avec la réactivité
+    var table = $('#shows-table').DataTable({
+        responsive: true,
+        lengthMenu: [10, 25, 50, 100, { "label": "Tout", "value": -1 }]
+    });
 
-     // Recherche dans le tableau lors de la frappe
-     $('#searchInput').on('keyup', function() {
+    // Recherche dans le tableau lors de la frappe
+    $('#searchInput').on('keyup', function () {
+        table.search(this.value).draw();
+    });
 
-         var searchTerm = $(this).val();
-         console.log("searchTerm : " + searchTerm);
-         $('#shows-table').DataTable().search(searchTerm).draw();
-     });
+    // Nombre de spectacles affichés
+    $('#showCountSelect').on('change', function () {
+        var rowCount = table.rows().count();
+        var selectedValue = $(this).val();
 
-     // Nombre de spectacles affichés
-     $('#showCountSelect').on('change', function() {
-
-         var rowCount = $('#shows-table').DataTable().rows().count();
-         var selectedValue = $(this).val();
-
-         console.log("rowCount: " + rowCount);
-         console.log("selectedValue: " + selectedValue);
-
-         if (selectedValue == 'all') {
-             $('#shows-table').DataTable().page.len(-1).draw();
-             $('#showCountSelect option[value="all"]').text('les spectacles (' + rowCount + ')');
-         } else {
-             $('#shows-table').DataTable().page.len(selectedValue).draw();
-         }
-     });
- });
+        if (selectedValue == 'all') {
+            table.page.len(-1).draw();
+            $(this).find('option[value="all"]').text('les spectacles (' + rowCount + ')');
+        } else {
+            table.page.len(selectedValue).draw();
+        }
+    });
+});

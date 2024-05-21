@@ -72,33 +72,7 @@
 
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        // Vérification de la disponibilité du login
-        $('#login').on('blur', function() {
-            var login = $(this).val();
-            $.get('/check-login-availability?login=' + login, function(response) {
-                if (!response.available) {
-                    $('#login-error').text('Login already exists.');
-                } else {
-                    $('#login-error').text('');
-                }
-            });
-        });
 
-        // Vérification de la disponibilité de l'email
-        $('#email').on('blur', function() {
-            var email = $(this).val();
-            $.get('/check-email-availability?email=' + email, function(response) {
-                if (!response.available) {
-                    $('#email-error').text('Email already exists.');
-                } else {
-                    $('#email-error').text('');
-                }
-            });
-        });
-    });
-</script>
 
 </body>
 </html>

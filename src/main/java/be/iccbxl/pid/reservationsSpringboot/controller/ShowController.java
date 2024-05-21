@@ -4,13 +4,17 @@ import be.iccbxl.pid.reservationsSpringboot.model.Artist;
 import be.iccbxl.pid.reservationsSpringboot.model.ArtisteType;
 import be.iccbxl.pid.reservationsSpringboot.model.Show;
 import be.iccbxl.pid.reservationsSpringboot.service.ShowService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,11 @@ import java.util.TreeMap;
 
 @Controller
 public class ShowController {
+
+    private List<String> cart = new ArrayList<>();
+
+    @Autowired
+    private HttpSession session;
     @Autowired
     ShowService service;
 
@@ -53,6 +62,51 @@ public class ShowController {
         model.addAttribute("title", "Fiche d'un spectacle");
 
         return "show/show";
+    }
+
+    @PostMapping("/cart/{id}")
+    public String addToCart(@PathVariable("id") String id) {
+        List<String> cart = (List<String>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+        cart.add(id);
+        session.setAttribute("cart", cart);
+        return "redirect:/cart"; // Redirigez pour éviter les problèmes de rafraichissement
+    }
+
+    @GetMapping("/cart")
+    public String viewCart(Model model) {
+        List<String> cart = (List<String>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+        List<Show> cartShows = new ArrayList<>();
+        double totalPrice = 0.0; // Initialiser le prix total
+        for (String showId : cart) {
+            Show show = service.get(showId);
+            cartShows.add(show);
+            totalPrice += show.getPrice(); // Ajouter le prix au total
+        }
+        model.addAttribute("cartShows", cartShows);
+        model.addAttribute("totalPrice", totalPrice); // Passer le prix total à la vue
+        return "show/cart";
+    }
+
+    @ModelAttribute("cartItemCount")
+    public int getCartItemCount() {
+        List<String> cart = (List<String>) session.getAttribute("cart");
+        return (cart != null) ? cart.size() : 0;
+    }
+
+    @PostMapping("/cart/remove/{id}")
+    public String removeFromCart(@PathVariable("id") String id) {
+        List<String> cart = (List<String>) session.getAttribute("cart");
+        if (cart != null) {
+            cart.remove(id);
+            session.setAttribute("cart", cart);
+        }
+        return "redirect:/cart";
     }
 
 }
