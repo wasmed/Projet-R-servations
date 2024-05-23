@@ -56,8 +56,8 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="#" class="brand-link">
-            <span class="brand-text font-weight-light">Back Office</span>
+        <a href="#" th:href="@{/shows}" class="brand-link">
+            <span class="brand-text font-weight-light">Home</span>
         </a>
         <!-- Sidebar -->
         <div class="sidebar">
@@ -94,6 +94,12 @@
                         <a href="#" class="nav-link" id="btn-type">
                             <i class="nav-icon fas fa-tv"></i>
                             <p>Types</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="btn-representation">
+                            <i class="nav-icon fas fa-tv"></i>
+                            <p>Representation</p>
                         </a>
                     </li>
                 </ul>
@@ -171,33 +177,40 @@
                     </div>
 
                     <div id="users-section" class="content-section" style="display: none;">
-                        <form th:action="@{/admin/users/add}" method="post" th:object="${newUser}">
-                        </form>
-                        <div th:if="${#fields.hasErrors('newUser')}" th:errors="*{newUser}"> </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Liste des utilisateurs</h3>
 
-                        <div th:if="${userToEdit!=null}">
-                            <form th:action="@{/admin/users/update/{id}(id=${userToEdit.id})}" method="post" th:object="${userToEdit}">
-                                <div th:if="${#fields.hasErrors('userToEdit.*')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('userToEdit.*')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-                            </form>
+                                    <a href="#"  th:href="@{/registration}" class="btn btn-primary float-right">Ajouter un utilisateur</a>
+
                         </div>
-
+                        <div class="card-body">
                         <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>Login</th>
+                                <th>Lastname</th>
+                                <th>Firstname</th>
+                                <th>Email</th>
+                                <th>Langue</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
                             <tbody>
                             <tr th:each="user : ${users}">
                                 <td th:text="${user.login}"></td>
-                                <td><input type="text" th:value="${user.lastname}" class="form-control user-lastname" data-user-id="${user.id}"></td>
-                                <td><input type="text" th:value="${user.firstname}" class="form-control user-firstname" data-user-id="${user.id}"></td>
-                                <td><input type="email" th:value="${user.email}" class="form-control user-email" data-user-id="${user.id}"></td>
-                                <td><input type="text" th:value="${user.langue}" class="form-control user-langue" data-user-id="${user.id}"></td>
-                                <td><input type="text" th:value="${user.role}" class="form-control user-role" data-user-id="${user.id}"></td>
+                                <td th:text="${user.login}"></td>
+                                <td th:text="${user.lastname}"></td>
+                                <td th:text="${user.firstname}"></td>
+                                <td th:text="${user.email}"></td>
+                                <td th:text="${user.langue}"></td>
+                                <td th:text="${user.role}"></td>
                                 <td>
                                     <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-primary btn-sm">Modifier</a>
-                                    <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm"
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</a>
+                                    <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" >
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">Supprimer</button>
+                                    </form>
                                 </td>
                             </tr>
                             </tbody>
@@ -238,7 +251,18 @@
                                             <button class="btn btn-primary btn-sm edit-location" data-location-id="${location.id}">Modifier</button>
                                             <button class="btn btn-danger btn-sm delete-location" data-location-id="${location.id}">Supprimer</button>
                                         </td>
+                                        <td>
+                                            <form th:action="@{/admin/shows/assign-location}" method="post">
+                                                <input type="hidden" name="locationId" th:value="${location.id}">
+                                                <select name="showId" class="form-control">
+                                                    <option value="">Select a show</option>
+                                                    <option th:each="show : ${allShows}" th:value="${show.id}" th:text="${show.title}"></option>
+                                                </select>
+                                                <button type="submit" class="btn btn-info btn-sm">Assign</button>
+                                            </form>
+                                        </td>
                                     </tr>
+
                                     </tbody>
                                 </table>
                             </div>
@@ -278,7 +302,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">Liste des Shows</h3>
-                                <a href="#" th:href="@{/registration}" class="btn btn-primary float-right">Ajouter un Show</a>
+                                <a href="#" th:href="@{/admin/shows/add}" class="btn btn-primary float-right">Ajouter un Show</a>
+
                             </div>
                             <div class="card-body">
 
@@ -321,7 +346,6 @@
                         </div>
                     </div>
                 </div>
-    </div>
                 <!-- /.row -->
           <!-- /.container-fluid -->
         </section>

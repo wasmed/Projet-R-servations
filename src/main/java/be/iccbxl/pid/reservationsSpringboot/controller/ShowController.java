@@ -76,7 +76,7 @@ public class ShowController {
     }
 
     @GetMapping("/cart")
-    public String viewCart(Model model) {
+    public String viewCart(Model model, HttpSession session) {
         List<String> cart = (List<String>) session.getAttribute("cart");
         if (cart == null) {
             cart = new ArrayList<>();
@@ -88,6 +88,15 @@ public class ShowController {
             cartShows.add(show);
             totalPrice += show.getPrice(); // Ajouter le prix au total
         }
+        if (session.isNew()) { // Initialiser la session si elle est nouvelle
+            session.setAttribute("paidShows", new ArrayList<String>());
+        }
+        List<String> paidShows = (List<String>) session.getAttribute("paidShows");
+        if (paidShows == null) {
+            paidShows = new ArrayList<>();
+        }
+        model.addAttribute("paidShows", paidShows); // Ajouter paidShows au modèle
+
         model.addAttribute("cartShows", cartShows);
         model.addAttribute("totalPrice", totalPrice); // Passer le prix total à la vue
         return "show/cart";

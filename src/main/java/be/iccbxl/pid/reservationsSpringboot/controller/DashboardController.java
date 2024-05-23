@@ -1,9 +1,6 @@
 package be.iccbxl.pid.reservationsSpringboot.controller;
 
-import be.iccbxl.pid.reservationsSpringboot.model.Artist;
-import be.iccbxl.pid.reservationsSpringboot.model.Location;
-import be.iccbxl.pid.reservationsSpringboot.model.Show;
-import be.iccbxl.pid.reservationsSpringboot.model.User;
+import be.iccbxl.pid.reservationsSpringboot.model.*;
 import be.iccbxl.pid.reservationsSpringboot.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class DashboardController {
@@ -30,6 +31,10 @@ public class DashboardController {
 
     @Autowired
     private ArtistService artistService;
+
+
+    @Autowired
+    private RepresentationService representationService;
 
     @Autowired
     private TypeService typeService;
@@ -80,49 +85,99 @@ public class DashboardController {
         }
         return "user/admin";
     }
-    // Méthodes pour l'ajout (POST)
-    @PostMapping("/users/add")
-    public String addUser(@ModelAttribute("newUser") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.newUser", bindingResult);
-            redirectAttributes.addFlashAttribute("newUser", user);
-            return "redirect:/admin"; // Rediriger vers la page admin avec les erreurs
-        }
 
-        userService.addUser(user);
-        return "redirect:/admin";
-    }
 
-    // ... (mêmes méthodes POST pour addShow, addLocation, addType)
-
-    // Méthodes pour la modification (GET et POST)
-    @GetMapping("/users/edit/{id}")
-    public String editUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/admin/users/edit/{id}")
+    public String editUser(@PathVariable Long id, Model model) {
         User user = userService.getUser(id);
-        redirectAttributes.addFlashAttribute("userToEdit", user);
-        return "redirect:/admin";
+        model.addAttribute("user", user);
+        model.addAttribute("isAdminEditing", true); // Indicate admin editing mode
+        return "user/member"; // Reuse your existing template
     }
 
-    @PostMapping("/users/update/{id}")
-    public String updateUser(@PathVariable Long id, @ModelAttribute("userToEdit") @Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    @PostMapping("/admin/users/update/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute("userToEdit")  User user, BindingResult bindingResult , Model model) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userToEdit", bindingResult);
-            redirectAttributes.addFlashAttribute("userToEdit", user);
-            return "redirect:/admin";
+            model.addAttribute("isAdminEditing", true); // Retain admin editing mode
+            return "user/member"; // Return to form with errors
         }
-
-        userService.updateUser(id, user);
-        return "redirect:/admin";
+        userService.updateUserAsmin(id, user);
+        return "redirect:/admin"; // Redirect
     }
 
-    // ... (mêmes méthodes GET/POST pour edit/update pour show, location, type)
-
-    // Méthodes pour la suppression (GET)
-    @GetMapping("/users/delete/{id}")
+    @GetMapping("/admin/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
+
+
+
+    @GetMapping("/admin/shows/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("show", new Show());
+        model.addAttribute("allArtists", artistService.getAllArtists());
+        model.addAttribute("allLocations", locationService.getAll());
+
+
+        return "show/showAdd";
+    }
+    @PostMapping("/admin/shows/add")
+    public String addShow(@ModelAttribute("show") Show show,
+                           Model model) {
+
+        showService.add(show);
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/shows/assign-location/{showId}")
+    public String assignLocationForm( Model model) {
+        model.addAttribute("allShows", showService.getAll()); // Add all shows to the model
+        model.addAttribute("allLocations", locationService.getAll());
+
+        return "location/assignLocation"; // Or your existing "user/admin" template
+    }
+    @PostMapping("/admin/shows/assign-location/{showId}")
+    public String assignLocation(@PathVariable Long showId,
+                                 @RequestParam("locationId") Long locationId) {
+        Show show = showService.get(showId);
+        Location location = locationService.get(locationId.toString());
+
+        if (show != null && location != null) {
+            show.setLocation(location); // Associate the location
+            showService.update(showId, show); // Save the updated show
+        } else {
+            // Handle the case where the show or location is not found (e.g., add an error message)
+        }
+
+        return "redirect:/admin"; // Redirect back to the show list
+    }
+
+    @PostMapping("/admin/shows/update/{id}")
+    public String updateShow(@PathVariable Long id, @ModelAttribute("show") Show show, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("allArtists", artistService.getAllArtists());
+            model.addAttribute("allLocations", locationService.getAll());
+          //  model.addAttribute("artistTypes", show.getCollaborateurs().keySet());
+            return "show/showEdit";
+        }
+
+        // Handle Artist Associations (similar to addShow)
+
+
+        showService.update(id, show);
+        return "redirect:/admin/shows";
+    }
+
+
+
+
+    @PostMapping("/admin/shows/delete/{id}")
+    public String deleteShow(@PathVariable Long id) {
+        showService.delete(id);
+        return "redirect:/admin/shows";
+    }
+
 
 
 }

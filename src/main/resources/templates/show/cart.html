@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="layouts/main">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/main">
 <head>
   <meta charset="UTF-8">
   <title>Panier</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <script
-          type="text/javascript" th:src="@{/js/panier.js}">
-  </script>
+  <script type="text/javascript" th:src="@{/js/panier.js}"></script>
 </head>
 <body>
 <div class="container mt-3">
   <div layout:fragment="content" class="wrapper">
-  <h1>Votre Panier</h1>
+    <h1>Votre Panier</h1>
     <table class="table">
       <thead>
       <tr>
@@ -27,9 +24,12 @@
       <tr th:each="show : ${cartShows}">
         <td th:text="${show.title}">Nom du spectacle</td>
         <td th:text="${show.price}">Prix</td>
-        <td>   <form th:action="@{/cart/remove/{id}(id=${show.id})}" method="post">
-          <button type="submit" class="btn btn-danger">Supprimer</button>
-        </form></td>
+        <td th:if="${session.paidShows != null and #lists.contains(session.paidShows, show.id)}">Payé</td>
+        <td>
+          <form th:if="${! #lists.contains(paidShows, show.id)}" th:action="@{/cart/remove/{id}(id=${show.id})}" method="post">
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+          </form>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -39,12 +39,15 @@
         <p class="text-right">
           <strong>Prix total:</strong> <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')} + ' €'"></span>
         </p>
-        <a href="/payment" class="btn btn-success">Payer</a>
+
+        <a th:href="@{/payment(amount=${totalPrice})}"
+           class="btn btn-success"
+           th:if="${not cartShows.isEmpty()}">Payer</a>
       </div>
     </div>
 
-  <a href="/shows" class="btn btn-secondary">Continuer vos achats</a>
-</div>
+    <a href="/shows" class="btn btn-secondary">Continuer vos achats</a>
+  </div>
 </div>
 </body>
 </html>

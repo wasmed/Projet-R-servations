@@ -70,7 +70,6 @@ public class UserService {
         existingUser.setLastname(user.getLastname());
         existingUser.setEmail(user.getEmail());
         existingUser.setLangue(user.getLangue());
-
         // Retain the original password
       //  existingUser.setPassword(existingUser.getPassword());
 
@@ -78,6 +77,22 @@ public class UserService {
 
     }
 
+    public void updateUserAsmin(long id, User user) {
+        User existingUser = userRepository.findById(id);
+
+        // Update user fields (except password)
+        existingUser.setLogin(user.getLogin());
+        existingUser.setFirstname(user.getFirstname());
+        existingUser.setLastname(user.getLastname());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setLangue(user.getLangue());
+        existingUser.setRole(user.getRole());
+        // Retain the original password
+        //  existingUser.setPassword(existingUser.getPassword());
+
+        userRepository.save(existingUser);
+
+    }
 
 
     public void deleteUser(long id) {

@@ -28,6 +28,9 @@ $('#btn-locations').on('click', function() {
 $('#btn-type').on('click', function() {
     showSection('#type-section');
 });
+ $('#btn-representation').on('click', function() {
+        showSection('#representation-section');
+    });
 
 
     $(".edit-user").on("click", function(event) {

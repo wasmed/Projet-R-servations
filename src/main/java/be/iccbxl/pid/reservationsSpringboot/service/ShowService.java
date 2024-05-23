@@ -1,5 +1,6 @@
 package be.iccbxl.pid.reservationsSpringboot.service;
 
+import be.iccbxl.pid.reservationsSpringboot.model.Artist;
 import be.iccbxl.pid.reservationsSpringboot.model.Location;
 import be.iccbxl.pid.reservationsSpringboot.model.Show;
 import be.iccbxl.pid.reservationsSpringboot.repository.ShowRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -34,21 +36,29 @@ public class ShowService {
         return show.isPresent() ? show.get() : null;
     }
     public Show get(long id) {
-        Optional<Show> show = repository.findById(id);
-        return show.isPresent() ? show.get() : null;
+       return repository.findById(id);
+
     }
     public void add(Show show) {
         repository.save(show);
     }
 
-    public void update(String id, Show show) {
+    public void update(long id, Show show) {
+        Show existingShow = repository.findById(id);
+        existingShow.setBookable(show.isBookable());
+        existingShow.setLocation(show.getLocation());
+        existingShow.setTitle(show.getTitle());
+        existingShow.setArtistTypes(show.getArtistTypes());
+        existingShow.setDescription(show.getDescription());
+        existingShow.setRepresentations(show.getRepresentations());
+        existingShow.setPrice(show.getPrice());
         repository.save(show);
     }
 
-    public void delete(String id) {
-        Long indice = (long) Integer.parseInt(id);
+    public void delete(long id) {
+      //  Long indice = (long) Integer.parseInt(id);
 
-        repository.deleteById(indice);
+        repository.deleteById(id);
     }
 
     public List<Show> getFromLocation(Location location) {
@@ -59,6 +69,9 @@ public class ShowService {
 
         return repository.count();
     }
+
+
+
 
 
 }

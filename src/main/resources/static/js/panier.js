@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const tableBody = document.querySelector('.table tbody');
   const totalPriceElement = document.querySelector('.total-price');
 
+
   tableBody.addEventListener('click', function (event) {
     if (event.target.classList.contains('btn-danger')) {
       const row = event.target.closest('tr');

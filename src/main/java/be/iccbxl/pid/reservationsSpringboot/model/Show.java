@@ -3,6 +3,8 @@ package be.iccbxl.pid.reservationsSpringboot.model;
 import com.github.slugify.Slugify;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,10 +31,12 @@ public class Show {
     private double price;
     private String description;
 
-    @Column(name="created_at")
+    @Column(name="created_at", updatable=false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(name="updated_at")
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @ManyToOne
@@ -48,6 +52,9 @@ public class Show {
     @OneToMany(targetEntity=Price.class, mappedBy="show")
     private List<Price> prices = new ArrayList<>();
 
+    @Transient
+    private Long typeId;  // Pour stocker l'ID du type d'artiste sélectionné
+
     public Show() { }
 
     public Show(String title, String description,String posterUrl,Location location, boolean bookable,
@@ -60,8 +67,7 @@ public class Show {
         this.location = location;
         this.bookable = bookable;
         this.price = price;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = null;
+
     }
     public void setTitle(String title) {
         this.title = title;
@@ -69,6 +75,10 @@ public class Show {
         Slugify slg = new Slugify();
 
         this.setSlug(slg.slugify(title));
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public boolean isBookable() {
@@ -144,7 +154,10 @@ public class Show {
 
         return this;
     }
-
+    public LocalDateTime getDate() {
+        // Retournez la date appropriée (par exemple, une date de création, de mise à jour, etc.)
+        return this.createdAt; // Ou une autre date pertinente
+    }
     @Transient
     public List<Artist> getAuthors() {
         List<Artist> authors = new ArrayList<>();

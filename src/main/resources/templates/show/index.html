@@ -11,6 +11,10 @@ layout:decorate="layouts/main">
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
   <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <link rel="alternate" type="application/rss+xml" title="Flux RSS des spectacles" th:href="@{/shows/feed.rss}" />
+
+
+
   <!-- DataTables JavaScript -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -70,7 +74,7 @@ layout:decorate="layouts/main">
         <td th:text="${show.price} + ' €'">9.99 €</td>
         <td th:text="${show.bookable} ? 'Oui' : 'Non'">Non</td>
         <td>
-          <a th:href="@{/shows/{id}(id=${show.id})}" class="btn btn-primary">Voir</a>
+          <a th:href="@{/shows/{id}(id=${show.id})}" class="btn btn-primary">Reserver</a>
         </td>
       </tr>
       </tbody>
