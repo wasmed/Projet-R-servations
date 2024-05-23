@@ -1,53 +1,60 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/main">
 <head>
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <title>Liste des artistes</title>
+  <style>
+    .artist-table th, .artist-table td {
+      text-align: center;
+    }
+    .artist-table td {
+      vertical-align: middle;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+<div class="container mt-5">
   <div layout:fragment="content">
-    <h1 th:text="${title}">Liste des artistes</h1>
+    <h1 class="text-center mb-4" th:text="${title}">Liste des artistes</h1>
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered artist-table" th:if="${!#lists.isEmpty(artists)}">
+        <thead class="thead-dark">
+        <tr>
+          <th>Prénom</th>
+          <th>Nom</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="artist : ${artists}">
+          <td th:text="${artist.firstname}">Prénom</td>
+          <td th:text="${artist.lastname}">Nom</td>
+          <td>
+            <a th:href="@{/artists/{id}(id=${artist.id})}" class="btn btn-primary btn-sm">Voir</a>
+            <div th:if="${role == 'admin'}">
 
-    <div class="actions">
-      <a th:href="@{/artists/create}">Add new artist</a>
+              <a  th:href="@{/artists/{id}/edit(id=${artist.id})}" class="btn btn-warning btn-sm">Modifier</a>
+              <a  href="#" th:onclick="|if(confirm('Confirm delete artist #${artist.id}'))
+	                    			document.getElementById('deleteForm-${artist.id}').submit();
+	                    			return false;|" class="btn btn-danger btn-sm">Supprimer</a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div th:if="${role == 'admin'}" class="mb-3">
+        <a th:href="@{/artists/create}" class="btn btn-success">Ajouter un artiste</a>
+      </div>
+      <div th:if="${#lists.isEmpty(artists)}" class="alert alert-warning" role="alert">
+        Aucun artiste trouvé.
+      </div>
     </div>
-
-
-    <table th:unless="${#lists.isEmpty(artists)}">
-      <thead>
-      <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th colspan="3">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-
-      <tr th:each="artist : ${artists}">
-        <td th:text="${artist.firstname}">Bob</td>
-        <td th:text="${artist.lastname}">Sull</td>
-        <td><a th:href="@{/artists/{id}(id=${artist.id})}">View</a></td>
-        <td><a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a></td>
-        <td>
-          <form th:id="|deleteForm-${artist.id}|"
-                th:action="@{/artists/{id}(id=${artist.id})}" th:method="delete">
-            <a href="#"
-               th:onclick="|if(confirm('Confirm delete artist #${artist.id}'))
-	                    		document.getElementById('deleteForm-${artist.id}').submit();
-	                    		return false;|">Delete</a>
-          </form>
-        </td>
-
-      </tr>
-      </tbody>
-    </table>
   </div>
 </div>
 </body>
-
 </html>

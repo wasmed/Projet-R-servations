@@ -1,43 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.mx/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
 
 <head>
-
     <title>Login Form</title>
-    <link rel="stylesheet" th:href="@{../css/styles.css}">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
+
 <body>
 <div class="container">
-    <div layout:fragment="content">
-    <div class="message" th:if="${param.error}">
-        Invalid Username or Password
-    </div>
-    <div class="message" th:if="${param.logout}">
-        Logout Successfuly
-    </div>
+    <div class="login-container">
+        <div layout:fragment="content">
+            <div class="message" th:if="${param.error}">
+                Invalid Username or Password
+            </div>
+            <div class="message" th:if="${param.logout}">
+                Logout Successfully
+            </div>
 
-    <h2>Admin and User Login Page</h2>
-    <form
-            th:action="@{/login}"
-            method="post"
+            <h2>Admin and User Login</h2>
 
-    >
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                </div>
 
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <a class="nav-link" href="#" th:href="@{/forgot-password}">Forgot password?</a>
+
         </div>
-
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input  type="password" id="password" name="password" placeholder="Enter your password" required>
-        </div>
-        <input type="submit" value="Register">
-    </form>
     </div>
 </div>
 </body>

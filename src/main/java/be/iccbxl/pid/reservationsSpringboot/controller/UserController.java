@@ -15,8 +15,12 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -64,33 +68,130 @@ public class UserController {
 
 
     }
+
     @GetMapping("/registrationConfirmation")
     public String registrationConfirmation(Model model) {
 
         return "user/registrationConfirmation";
     }
+
     @GetMapping("/login")
     public String login(Model model) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean loggedIn = authentication != null && authentication.isAuthenticated();
-        model.addAttribute("loggedIn", loggedIn);
+
         return "user/login";
     }
 
 
-   /* @GetMapping("user-page")
-    public String userPage (Model model, Principal principal) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("user", userDetails);
-        return "user/user";
+    @GetMapping("/member")
+    public String profilePage(Model model, Principal principal) {
+        String username = principal.getName();
+        User user = userService.findByLogin(username);
+
+        model.addAttribute("user", user);
+        model.addAttribute("listMembres", userService.getAllUsers());
+        return "user/member";
     }
 
-    @GetMapping("admin-page")
-    public String adminPage (Model model, Principal principal) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-        model.addAttribute("user", userDetails);
-        return "user/admin";
-    }*/
+
+    @PostMapping("/member/saveUpdate")
+    public String updateProfile(@ModelAttribute("user") User user, BindingResult bindingResult, Principal principal, Model model) {
+
+        // Check for validation errors
+        String username = principal.getName();
+        User userprincipale = userService.findByLogin(username);
+
+        User existingUserLogin = userService.findByLogin(user.getLogin());
+        User existingUserEmail = userService.findByEmail(user.getEmail());
+
+        if (existingUserLogin != null && existingUserLogin.getId() != userprincipale.getId()) {
+            bindingResult.rejectValue("login", "error.user", "Login already exists.");
+        }
+
+        if (existingUserEmail != null && existingUserEmail.getId() != userprincipale.getId()) {
+            bindingResult.rejectValue("email", "error.user", "Email already exists.");
+        }
+
+        if (bindingResult.hasErrors()) {
+
+            return "user/member";
+        } else {
+            userService.updateUser(userprincipale.getId(), user);
+            userService.sendConfirmationEmail(user);
+            model.addAttribute("message", "Registered Successfully! Please check your email for further instructions.");
+            return "user/updateConfirmation";
+        }
+
+
+    }
+
+
+    @GetMapping("/password")
+    public String getUpdatePasswordPage(Model model, Principal principal) {
+        String username = principal.getName();
+        User user = userService.findByLogin(username);
+        model.addAttribute("user", user);
+        model.addAttribute("listMembres", userService.getAllUsers());
+        return "user/updatePassword";
+    }
+
+    @PostMapping("/password/update")
+    public String updatePassword(@ModelAttribute("user") User user, BindingResult result, Principal principal, Model model) {
+        // Vérifier si le nouveau mot de passe correspond à la confirmation du mot de passe
+        String username = principal.getName();
+        User userprincipale = userService.findByLogin(username);
+
+        if (!user.getPassword().equals(user.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
+            return "user/updatePassword";
+        }
+
+        if (result.hasErrors()) {
+            return "user/updatePassword";
+        } else {
+
+            userService.updateUserPassword(userprincipale.getId(), user);
+            // userService.sendConfirmationEmail(user);
+            model.addAttribute("message", "Registered Successfully! Please check your email for further instructions.");
+            return "user/updateConfirmation";
+
+        }
+    }
+    @GetMapping("/passwordResetEmailSent")
+    public String PasswordResetEmailSent(Model model) {
+
+        return "user/passwordResetEmailSent";
+    }
+
+    @GetMapping("/forgot-password")
+    public String ForgetPasswordPage(Model model) {
+
+        return "user/forgotPassword";
+    }
+
+    @PostMapping("/forgot-password/sendEmail")
+    public String processForgotPasswordForm(@ModelAttribute("email") String email,@ModelAttribute("password") String password, @ModelAttribute("confirmPassword") String confirmPassword,BindingResult result, Model model) {
+
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            model.addAttribute("errorMessage", "No user found with this email.");
+            return "user/forgotPassword";
+        }
+        System.out.println("mot de passe :"+ password +" **"+ confirmPassword);
+            if (!password.equals(confirmPassword) ){
+                model.addAttribute("errorMessage", "Passwords do not match.");
+                return "user/forgotpassword";
+            }
+        System.out.println("entrer pour update et send email");
+                userService.updateUserPassword(user.getId(), user);
+                userService.sendConfirmationEmailForgetPassword(user);
+                model.addAttribute("message", "Registered Successfully! Please check your email for further instructions.");
+                return "user/passwordResetEmailSent";
+
+            }
+
+
+
 
 }

@@ -2,6 +2,7 @@ package be.iccbxl.pid.reservationsSpringboot.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,20 +28,23 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/shows").permitAll();
                     auth.requestMatchers("/").hasRole("ADMIN");
-                    auth.requestMatchers("/shows","/profil").hasRole("MEMBER");
+                    auth.requestMatchers("/").hasRole("MEMBER");
+                    auth.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll();
                     auth.requestMatchers("/registration", "/css/**").permitAll();
+                    auth.requestMatchers("/forgot-password", "/css/**").permitAll();
+                    auth.requestMatchers("/forgot-password/sendEmail", "/css/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/artists", true)
+                        .defaultSuccessUrl("/shows", true)
                         .permitAll())
                 .logout(logout -> logout
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/shows")
                         .permitAll())
                 .rememberMe(Customizer.withDefaults())
                 .build();

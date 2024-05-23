@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/main">
+<head>
+    <meta charset="UTF-8">
+    <title>edit show</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <h2>Edit Show</h2>
+
+    <form th:action="@{/admin/shows/update/{id}(id=${show.id})}" method="post" th:object="${show}">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" th:field="*{title}" class="form-control" />
+            <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="authors">Artists:</label>
+            <select id="authors" th:field="*{artists}" class="form-control" multiple>
+                <option th:each="artist : ${allArtists}" th:value="${artist.id}"
+                        th:text="${artist.firstname} + ' ' + ${artist.lastname}"
+                        th:selected="${show.authors.contains(artist)}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <select id="location" th:field="*{location}" class="form-control">
+                <option th:each="location : ${allLocations}" th:value="${location.id}" th:text="${location.designation}"
+                        th:selected="${location.id == show.location.id}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="representations">Representations:</label>
+            <textarea id="representations" th:field="*{representations}" class="form-control"></textarea>
+            <div th:if="${#fields.hasErrors('representations')}" th:errors="*{representations}" class="text-danger"></div>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" id="price" th:field="*{price}" class="form-control" />
+            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger"></div>
+        </div>
+        <div class="form-group">
+            <label for="bookable">Bookable:</label>
+            <input type="checkbox" id="bookable" th:field="*{bookable}" />
+            <div th:if="${#fields.hasErrors('bookable')}" th:errors="*{bookable}" class="text-danger"></div>
+        </div>
+    </form>
+</div>
+
+
+
+<div class="card-footer">
+    <nav><a th:href="@{/shows}" class="btn btn-secondary">Retour à l'index</a></nav>
+</div>
+</div>
+
+</body>
+</html>

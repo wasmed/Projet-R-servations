@@ -2,6 +2,7 @@ package be.iccbxl.pid.reservationsSpringboot.service;
 
 
 import be.iccbxl.pid.reservationsSpringboot.model.Artist;
+import be.iccbxl.pid.reservationsSpringboot.model.Type;
 import be.iccbxl.pid.reservationsSpringboot.repository.ArtistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,9 @@ public class ArtistService {
 
         return artistRepository.findById(id);
     }
-
+    public List<Artist> findByType(Type type) {
+        return artistRepository.findByTypesContains(type);
+    }
     public void addArtist(Artist artist) {
         artistRepository.save(artist);
     }
@@ -41,6 +44,17 @@ public class ArtistService {
     public void deleteArtist(long id) {
 
         artistRepository.deleteById(id);
+    }
+
+    public long countArtists() {
+        return artistRepository.count();
+    }
+
+    public List<Artist> findAllById(List<Long> ids) {
+        Iterable<Artist> iterable = artistRepository.findAllById(ids);
+        List<Artist> artists = new ArrayList<>();
+        iterable.forEach(artists::add);
+        return artists;
     }
 }
 

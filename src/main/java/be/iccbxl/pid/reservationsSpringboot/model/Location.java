@@ -2,10 +2,11 @@ package be.iccbxl.pid.reservationsSpringboot.model;
 
 import com.github.slugify.Slugify;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Data
 @Entity
 @Table(name="locations")
 public class Location {

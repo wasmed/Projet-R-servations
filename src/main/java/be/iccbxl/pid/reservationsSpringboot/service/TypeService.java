@@ -62,4 +62,8 @@ public class TypeService {
 
         repository.deleteById(indice);
     }
+
+    public Type getTypeByType(String typeName) {
+        return repository.findByType(typeName); // Assuming your TypeRepository has this method
+    }
 }

@@ -3,16 +3,34 @@
 <head>
   <meta charset="utf-8">
   <title>Footer fragment</title>
+
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+  body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  }
+  .content {
+  flex: 1;
+  }
+  footer {
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  text-align: center;
+  box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+  }
+  </style>
 </head>
 <body>
-<footer th:fragment="footer">
-  2024 – EPFC / ICC – Projet Réservations
-</footer>
+<div class="content">
+  <footer th:fragment="footer" class="footer mt-auto py-3">
+    <div class="container">
+      <span class="text-muted">2024 – EPFC / ICC – Projet Réservations</span>
+    </div>
+  </footer>
+</div>
 </body>
-
 </html>

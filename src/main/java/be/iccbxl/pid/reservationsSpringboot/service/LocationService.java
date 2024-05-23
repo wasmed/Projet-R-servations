@@ -30,7 +30,16 @@ public class LocationService {
 
         return location.isPresent() ? location.get() : null;
     }
+    public Location get(Long id) {
 
+        Optional<Location> location = repository.findById(id);
+
+        return location.isPresent() ? location.get() : null;
+    }
+
+    public Location findById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
     public void add(Location location) {
         repository.save(location);
     }

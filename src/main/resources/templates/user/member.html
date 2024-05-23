@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layouts/main">
+
+<head>
+  <title>Profil</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .content {
+      flex: 1;
+    }
+    .profile-info {
+      margin: 20px;
+    }
+    .btn-custom {
+      margin-top: 10px;
+    }
+    .card-header h2 {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container content">
+  <div layout:fragment="content">
+    <div class="container mt-5">
+      <h1>Profil de l'utilisateur</h1>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h2 th:text="${isAdminEditing} ? 'Admin Interface' : 'Mon Profil'"></h2>
+              </div>
+              <div class="card-body">
+                <form th:action="${isAdminEditing} ? @{/admin/users/update/{id}(id=${user.id})} : @{/member/saveUpdate}" method="post" th:object="${user}">
+                  <div class="form-group">
+                    <label for="login">Login:</label>
+                    <input type="text" class="form-control" id="login" th:field="*{login}" required />
+                    <span class="text-danger" th:errors="*{login}"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="firstname">Firstname:</label>
+                    <input type="text" class="form-control" id="firstname" th:field="*{firstname}" required />
+                    <span class="text-danger" th:errors="*{firstname}"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="lastname">Lastname:</label>
+                    <input type="text" class="form-control" id="lastname" th:field="*{lastname}" required />
+                    <span class="text-danger" th:errors="*{lastname}"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" th:field="*{email}" required />
+                    <span class="text-danger" th:errors="*{email}"></span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="langue">Langue:</label>
+                    <select class="form-control" th:field="*{langue}" id="langue" name="langue" required>
+                      <option value="fr">Français</option>
+                      <option value="nl">Néerlandais</option>
+                      <option value="en">Anglais</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group" th:if="${isAdminEditing}">
+                    <label for="role">Role:</label>
+                    <select class="form-control" th:field="*{role}" id="role" name="role" required>
+                      <option value="admin">Admin</option>
+                      <option value="member">Member</option>
+                      <option value=" ">sans</option>
+                    </select>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-custom">
+                    <span th:text="${isAdminEditing} ? 'Update User' : 'Update Profile'"></span>
+                  </button>
+                  <a th:if="${isAdminEditing}" th:href="@{/admin}" class="btn btn-danger btn-custom">Cancel</a>
+                  <a th:unless="${isAdminEditing}" th:href="@{/shows}" class="btn btn-danger btn-custom">Cancel</a>
+                </form>
+
+                <a th:href="@{/password}" class="btn btn-link btn-custom">Changer le mot de passe</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
